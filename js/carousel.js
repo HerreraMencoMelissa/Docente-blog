@@ -1,64 +1,235 @@
 document.addEventListener("DOMContentLoaded", () => {
+
     const carousels = document.querySelectorAll("[data-carousel]");
 
     carousels.forEach((carousel) => {
+
         const slides = carousel.querySelectorAll(".carousel-slide");
         const prevButton = carousel.querySelector(".prev");
         const nextButton = carousel.querySelector(".next");
         const dotsContainer = carousel.querySelector(".carousel-dots");
 
         let currentSlide = 0;
-        let autoPlay;
+        let interval = null;
 
-        /* CREAR INDICADORES */
+        /*
+        ==========================================
+        UNA SOLA IMAGEN
+        ==========================================
+        */
+
+        if (slides.length <= 1) {
+
+            if (prevButton) {
+                prevButton.style.display = "none";
+            }
+
+            if (nextButton) {
+                nextButton.style.display = "none";
+            }
+
+            if (dotsContainer) {
+                dotsContainer.style.display = "none";
+            }
+
+            if (slides[0]) {
+                slides[0].classList.add("active");
+            }
+
+            return;
+        }
+
+
+        /*
+        ==========================================
+        CREAR INDICADORES
+        ==========================================
+        */
+
         slides.forEach((slide, index) => {
+
             const dot = document.createElement("button");
+
             dot.classList.add("carousel-dot");
-            if (index === 0) dot.classList.add("active");
+
+            dot.setAttribute(
+                "aria-label",
+                `Ir a la imagen ${index + 1}`
+            );
+
+            if (index === 0) {
+                dot.classList.add("active");
+            }
+
             dot.addEventListener("click", () => {
-                currentSlide = index;
-                showSlide(currentSlide);
-                restartAutoPlay();
+                showSlide(index);
+                restartAutoplay();
             });
+
             dotsContainer.appendChild(dot);
+
         });
+
 
         const dots = dotsContainer.querySelectorAll(".carousel-dot");
 
+
+        /*
+        ==========================================
+        MOSTRAR SLIDE
+        ==========================================
+        */
+
         function showSlide(index) {
-            slides.forEach((slide) => slide.classList.remove("active"));
-            dots.forEach((dot) => dot.classList.remove("active"));
-            slides[index].classList.add("active");
-            dots[index].classList.add("active");
+
+            if (index >= slides.length) {
+                currentSlide = 0;
+            } else if (index < 0) {
+                currentSlide = slides.length - 1;
+            } else {
+                currentSlide = index;
+            }
+
+
+            slides.forEach((slide, i) => {
+
+                slide.classList.toggle(
+                    "active",
+                    i === currentSlide
+                );
+
+            });
+
+
+            dots.forEach((dot, i) => {
+
+                dot.classList.toggle(
+                    "active",
+                    i === currentSlide
+                );
+
+            });
+
         }
+
+
+        /*
+        ==========================================
+        SIGUIENTE
+        ==========================================
+        */
 
         function nextSlide() {
-            currentSlide++;
-            if (currentSlide >= slides.length) currentSlide = 0;
-            showSlide(currentSlide);
+
+            showSlide(currentSlide + 1);
+
         }
+
+
+        /*
+        ==========================================
+        ANTERIOR
+        ==========================================
+        */
 
         function previousSlide() {
-            currentSlide--;
-            if (currentSlide < 0) currentSlide = slides.length - 1;
-            showSlide(currentSlide);
+
+            showSlide(currentSlide - 1);
+
         }
 
-        nextButton.addEventListener("click", () => { nextSlide(); restartAutoPlay(); });
-        prevButton.addEventListener("click", () => { previousSlide(); restartAutoPlay(); });
 
-        function startAutoPlay() {
-            autoPlay = setInterval(() => { nextSlide(); }, 5000);
+        /*
+        ==========================================
+        BOTONES
+        ==========================================
+        */
+
+        if (nextButton) {
+
+            nextButton.addEventListener("click", () => {
+
+                nextSlide();
+                restartAutoplay();
+
+            });
+
         }
 
-        function restartAutoPlay() {
-            clearInterval(autoPlay);
-            startAutoPlay();
+
+        if (prevButton) {
+
+            prevButton.addEventListener("click", () => {
+
+                previousSlide();
+                restartAutoplay();
+
+            });
+
         }
 
-        carousel.addEventListener("mouseenter", () => { clearInterval(autoPlay); });
-        carousel.addEventListener("mouseleave", () => { startAutoPlay(); });
 
-        startAutoPlay();
+        /*
+        ==========================================
+        AUTOPLAY
+        ==========================================
+        */
+
+        function startAutoplay() {
+
+            interval = setInterval(() => {
+
+                nextSlide();
+
+            }, 5000);
+
+        }
+
+
+        function stopAutoplay() {
+
+            clearInterval(interval);
+
+        }
+
+
+        function restartAutoplay() {
+
+            stopAutoplay();
+
+            startAutoplay();
+
+        }
+
+
+        /*
+        ==========================================
+        PAUSAR AL PASAR EL MOUSE
+        ==========================================
+        */
+
+        carousel.addEventListener(
+            "mouseenter",
+            stopAutoplay
+        );
+
+
+        carousel.addEventListener(
+            "mouseleave",
+            startAutoplay
+        );
+
+
+        /*
+        ==========================================
+        INICIO
+        ==========================================
+        */
+
+        showSlide(0);
+
+        startAutoplay();
+
     });
+
 });
