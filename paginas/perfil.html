@@ -63,8 +63,7 @@
             max-width: 260px;
             aspect-ratio: 1/1;
             object-fit: cover;
-            /* 🔥 CLAVE: enfoca la imagen en la parte superior (rostro) */
-            object-position: top center; /* Cambia a 50% 20% si necesitas más ajuste */
+            object-position: top center;
             border-radius: 50%;
             border: 6px solid var(--vinotinto);
             box-shadow: 0 15px 35px rgba(122,16,37,0.25);
@@ -191,42 +190,112 @@
             font-style: italic;
         }
 
-        /* ===== PRINCIPIOS EDUCATIVOS ===== */
+        /* =========================================
+           SECCIÓN PREMIUM: PRINCIPIOS EDUCATIVOS 
+           ========================================= */
+        
+        /* Fondo gris perla para toda la sección */
+        .principles-wrapper {
+            background: #f4f6f9;
+            padding: 60px 40px;
+            border-radius: 30px;
+            margin: 50px 0 40px;
+            box-shadow: inset 0 2px 20px rgba(0,0,0,0.02);
+        }
+
+        .principles-title {
+            font-family: Georgia, "Times New Roman", serif; 
+            color: var(--vinotinto); 
+            text-align: center; 
+            font-size: 2.2rem; 
+            margin: 0 0 10px;
+            letter-spacing: -0.5px;
+        }
+
         .principles {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 30px;
-            margin: 50px 0 30px;
+            margin-top: 40px;
         }
+
         .principle-card {
-            background: white;
-            border-radius: 16px;
-            padding: 30px 25px;
+            background: rgba(255, 255, 255, 0.7); /* Efecto cristal */
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px 30px;
             text-align: center;
-            border: 1px solid var(--border);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
-            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03), 0 1px 3px rgba(0,0,0,0.02);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
         }
+
+        /* Línea de color superior al pasar el mouse */
+        .principle-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--vinotinto);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
         .principle-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 50px rgba(122,16,37,0.12);
-            border-color: var(--vinotinto-light);
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(122,16,37,0.12);
+            background: rgba(255, 255, 255, 1);
         }
-        .principle-card .icon {
-            font-size: 3rem;
-            display: block;
-            margin-bottom: 15px;
+
+        .principle-card:hover::before {
+            transform: scaleX(1);
         }
+
         .principle-card h4 {
             font-family: Georgia, "Times New Roman", serif;
             color: var(--vinotinto);
-            font-size: 1.3rem;
-            margin-bottom: 10px;
+            font-size: 1.4rem;
+            margin: 20px 0 15px;
         }
+
         .principle-card p {
             color: var(--text);
-            font-size: 0.95rem;
+            font-size: 1rem;
             line-height: 1.7;
+            font-weight: 400;
+        }
+
+        /* Íconos Premium */
+        .principle-card .icon-box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, rgba(122,16,37,0.1) 0%, rgba(122,16,37,0.02) 100%);
+            border: 1px solid rgba(122,16,37,0.1);
+            border-radius: 50%;
+            color: var(--vinotinto);
+            transition: all 0.4s ease;
+            box-shadow: 0 5px 15px rgba(122,16,37,0.05);
+        }
+
+        .principle-card:hover .icon-box {
+            background: var(--vinotinto);
+            color: white;
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 10px 25px rgba(122,16,37,0.3);
+        }
+
+        .principle-card .icon-box svg {
+            width: 38px;
+            height: 38px;
+            stroke-width: 1.5;
         }
 
         /* ===== RESPONSIVE ===== */
@@ -250,6 +319,9 @@
             }
             .principles {
                 grid-template-columns: 1fr;
+            }
+            .principles-wrapper {
+                padding: 40px 20px;
             }
         }
 
@@ -334,26 +406,46 @@
 
         </section>
 
-        <!-- PRINCIPIOS EDUCATIVOS -->
-        <h2 style="font-family: Georgia, 'Times New Roman', serif; color: var(--vinotinto); text-align: center; font-size: 2rem; margin: 40px 0 10px;">Principios Educativos</h2>
-        <div class="decorative-line" style="margin: 0 auto 30px;"></div>
-        <div class="principles">
-            <div class="principle-card">
-                <span class="icon">🧠</span>
-                <h4>Aprendizaje Significativo</h4>
-                <p>Construir conocimiento a partir de las experiencias y saberes previos de los estudiantes, conectando con su realidad.</p>
+        <!-- PRINCIPIOS EDUCATIVOS (DISEÑO PREMIUM) -->
+        <section class="principles-wrapper">
+            <h2 class="principles-title">Principios Educativos</h2>
+            <div class="decorative-line" style="margin: 0 auto 30px; background: var(--vinotinto);"></div>
+            
+            <div class="principles">
+                <!-- Tarjeta 1: Aprendizaje -->
+                <div class="principle-card">
+                    <div class="icon-box">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                    </div>
+                    <h4>Aprendizaje Significativo</h4>
+                    <p>Construir conocimiento a partir de las experiencias y saberes previos de los estudiantes, conectando con su realidad.</p>
+                </div>
+
+                <!-- Tarjeta 2: Formación -->
+                <div class="principle-card">
+                    <div class="icon-box">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                    </div>
+                    <h4>Formación Integral</h4>
+                    <p>Desarrollar competencias cognitivas, socioemocionales y éticas que preparen para la vida y la ciudadanía.</p>
+                </div>
+
+                <!-- Tarjeta 3: Innovación -->
+                <div class="principle-card">
+                    <div class="icon-box">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        </svg>
+                    </div>
+                    <h4>Innovación y TIC</h4>
+                    <p>Integrar herramientas tecnológicas y metodologías activas para potenciar el aprendizaje y la creatividad.</p>
+                </div>
             </div>
-            <div class="principle-card">
-                <span class="icon">🤝</span>
-                <h4>Formación Integral</h4>
-                <p>Desarrollar competencias cognitivas, socioemocionales y éticas que preparen para la vida y la ciudadanía.</p>
-            </div>
-            <div class="principle-card">
-                <span class="icon">💡</span>
-                <h4>Innovación y TIC</h4>
-                <p>Integrar herramientas tecnológicas y metodologías activas para potenciar el aprendizaje y la creatividad.</p>
-            </div>
-        </div>
+        </section>
 
         <!-- MENSAJE / CITA -->
         <section class="profile-message">

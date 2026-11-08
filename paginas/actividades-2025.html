@@ -1,513 +1,835 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Actividades 2025 | Docente Malvis</title>
+    <title>Actividades | Docente Malvis Algarín</title>
     <link rel="stylesheet" href="../css/style.css">
-</head>
+    
+    <!-- Fuentes de Google para un look de revista premium -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
 
+    <style>
+        /* ==========================================
+           VARIABLES DE DISEÑO PREMIUM
+           ========================================== */
+        :root {
+            --primary: #7a1025; /* Vinotinto */
+            --bg-color: #f7f9fc; /* Fondo general de la página */
+            --text-main: #2d2d2d;
+            --text-muted: #6b7280;
+            --card-bg: #ffffff;
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --shadow-soft: 0 10px 40px -10px rgba(0,0,0,0.08);
+            --shadow-hover: 0 20px 50px -10px rgba(122,16,37,0.15);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ==========================================
+           CONTENEDOR PRINCIPAL
+           ========================================== */
+        .activities-container {
+            max-width: 1200px;
+            margin: -80px auto 100px; /* Sube las tarjetas sobre el Hero */
+            padding: 0 24px;
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 60px;
+        }
+
+        /* ==========================================
+           TARJETAS DE ACTIVIDAD (Look de Agencia)
+           ========================================== */
+        .activity {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 50px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(0,0,0,0.03);
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Línea superior de color brillante (Efecto Premium) */
+        .activity::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50px;
+            right: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            border-radius: 0 0 3px 3px;
+        }
+
+        .activity:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-8px);
+        }
+
+        .activity:hover::before {
+            opacity: 1;
+        }
+
+        .activity-reverse .activity-info { order: 2; }
+        .activity-reverse .carousel { order: 1; }
+
+        /* ==========================================
+           INFORMACIÓN DE LA ACTIVIDAD
+           ========================================== */
+        .activity-info {
+            padding: 0;
+        }
+
+        /* ETIQUETA CORREGIDA (Píldora vinotinto) */
+        .activity-category {
+            display: inline-flex;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #ffffff !important; /* Forzamos el color blanco */
+            background: var(--primary); /* Fondo vinotinto */
+            padding: 8px 16px;
+            border-radius: 30px; /* Bordes de píldora */
+            margin-bottom: 24px;
+            box-shadow: 0 4px 10px rgba(122,16,37,0.2);
+        }
+
+        .activity-info h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.6rem;
+            color: var(--text-main);
+            line-height: 1.15;
+            margin-bottom: 24px;
+            letter-spacing: -0.5px;
+        }
+
+        .activity-info p {
+            color: var(--text-muted);
+            line-height: 1.8;
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+        
+        .activity-info p strong {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+        }
+
+        /* ==========================================
+           CARRUSEL TIPO "CINE" (Ajustado para fotos mixtas)
+           ========================================== */
+        .carousel {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1; /* 🌟 Cuadrado perfecto para evitar cortes extremos */
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.2);
+            background: #eef2f6;
+            border: 4px solid #fff;
+        }
+
+        .carousel-track {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out;
+            pointer-events: none;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .carousel-slide img,
+        .carousel-slide video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Llena el cuadro sin deformar */
+            object-position: center; /* Centra la imagen */
+            transition: transform 8s ease; 
+        }
+
+        .carousel-slide.active img {
+            transform: scale(1.05);
+        }
+
+        /* Botones del carrusel (Flechas elegantes) */
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            color: white;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            z-index: 5;
+            opacity: 0; /* Ocultos por defecto */
+        }
+
+        .carousel:hover .carousel-button {
+            opacity: 1;
+        }
+
+        .carousel-button:hover {
+            background: white;
+            color: var(--primary);
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .carousel-button.prev { left: 20px; }
+        .carousel-button.next { right: 20px; }
+
+        /* Puntos indicadores (Dots) */
+        .carousel-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 5;
+            background: rgba(0,0,0,0.3);
+            padding: 8px 12px;
+            border-radius: 30px;
+            backdrop-filter: blur(5px);
+        }
+
+        .carousel-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            border: none;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            padding: 0;
+        }
+
+        .carousel-dot.active {
+            background: white;
+            width: 24px;
+            border-radius: 10px;
+        }
+
+        /* ==========================================
+           DOCUMENTO DRIVE (Integración limpia)
+           ========================================== */
+        .documento-drive {
+            margin-top: 30px;
+            padding: 24px;
+            background: #f8fafc;
+            border-radius: var(--radius-md);
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        /* ==========================================
+           RESPONSIVE (Móviles)
+           ========================================== */
+        @media (max-width: 1024px) {
+            .activity {
+                padding: 40px;
+                gap: 40px;
+            }
+            .activity-info h2 { font-size: 2.2rem; }
+        }
+
+        @media (max-width: 900px) {
+            .activities-container {
+                margin-top: -50px;
+                gap: 40px;
+            }
+            .activity {
+                grid-template-columns: 1fr;
+                padding: 30px;
+                gap: 30px;
+            }
+            .activity-reverse .activity-info { order: 1; }
+            .activity-reverse .carousel { order: 2; }
+            
+            .activity-info h2 { font-size: 1.8rem; }
+            .carousel-button { opacity: 1; } /* Mostrar flechas siempre en móvil */
+        }
+    </style>
+</head>
 <body>
 
-<!-- ========================= HEADER ========================== -->
-<header class="header">
-    <div class="header-container">
-        <a href="../index.html" class="logo">
-            <img src="../img/institucional/logo.png" alt="Institución Educativa">
-        </a>
-        <nav class="nav">
-            <a href="../index.html">INICIO</a>
-            <a href="actividades.html">ACTIVIDADES</a>
-            <a href="actividades-2025.html" class="active">ACTIVIDADES 2025</a>
-            <a href="perfil.html">PERFIL</a>
-            <a href="resena.html">INSTITUCIONAL</a>
-        </nav>
-    </div>
-</header>
-
-<!-- ========================= HERO ========================== -->
-<section class="page-hero">
-    <div class="page-hero-content">
-        <span class="page-hero-subtitle">EXPERIENCIAS PEDAGÓGICAS</span>
-        <h1>ACTIVIDADES 2025</h1>
-        <p>Evidencias de las experiencias pedagógicas, proyectos, celebraciones y actividades desarrolladas durante el año escolar 2025.</p>
-    </div>
-</section>
-
-<!-- ========================= ACTIVIDADES ========================== -->
-<main class="activities-container">
-
-    <!-- 01 - SEMANA INSTITUCIONAL -->
-    <section class="activity">
-        <div class="activity-info">
-            <span class="activity-number">01</span>
-            <h2>SEMANA INSTITUCIONAL ENERO 2025</h2>
-            <p>Con actividades pensadas para fomentar la colaboración, el aprendizaje y el sentido de pertenencia, esta semana fue una oportunidad para disfrutar, compartir y crecer juntos. Una experiencia orientada a fortalecer la integración y el compromiso con la comunidad educativa.</p>
+    <!-- ========================= HEADER ========================== -->
+    <header class="header">
+        <div class="header-container">
+            <a href="../index.html" class="logo">
+                <img src="../img/institucional/logo.png" alt="Escudo institucional">
+            </a>
+            <nav class="nav">
+                <a href="../index.html">INICIO</a>
+                <a href="actividades.html" class="active">ACTIVIDADES</a>
+                <a href="actividades-2025.html">ACTIVIDADES 2025</a>
+                <a href="perfil.html">PERFIL DEL DOCENTE</a>
+                <a href="resena.html">RESEÑA INSTITUCIONAL</a>
+            </nav>
         </div>
-        <div class="carousel" data-carousel>
-            <div class="carousel-track">
-                <div class="carousel-slide active">
-                    <img src="../img/2025/semana-institucional/image.png" alt="Semana Institucional Enero 2025">
-                </div>
-            </div>
-            <button class="carousel-button prev" type="button">&#10094;</button>
-            <button class="carousel-button next" type="button">&#10095;</button>
-            <div class="carousel-dots"></div>
+    </header>
+
+    <!-- ========================= PAGE HERO ========================== -->
+    <section class="page-hero">
+        <div class="page-hero-overlay"></div>
+        <div class="page-hero-content">
+            <span>EXPERIENCIAS PEDAGÓGICAS</span>
+            <h1>ACTIVIDADES DESTACADAS</h1>
+            <p>Evidencias de las actividades, proyectos y experiencias desarrolladas durante el proceso educativo.</p>
         </div>
     </section>
 
-    <!-- 02 - INICIANDO AÑO -->
-    <section class="activity activity-reverse">
-        <div class="activity-info">
-            <span class="activity-number">02</span>
-            <h2>INICIANDO EL AÑO ESCOLAR 2025</h2>
-            <p>El comienzo del año escolar 2025 es una oportunidad para aprender, no solo en las aulas, sino también en cada experiencia que vivamos. Es tiempo de abrir nuestras mentes a nuevos conocimientos y nuestros corazones a nuevas amistades. Que este año esté lleno de crecimiento personal y académico.</p>
-        </div>
-        <div class="carousel" data-carousel>
-            <div class="carousel-track">
-                <div class="carousel-slide active">
-                    <img src="../img/2025/inicio-escolar/image.png" alt="Iniciando el año escolar 2025">
+    <!-- ========================= ACTIVIDADES ========================== -->
+    <main class="activities-container">
+
+        <!-- ACTIVIDAD 1: CARNAVAL -->
+        <article class="activity">
+            <div class="activity-info">
+                <span class="activity-category">ACTIVIDAD ESCOLAR</span>
+                <h2>CARNAVAL 2026</h2>
+                <p>En esta fiesta llena de color y ritmo, celebramos la riqueza cultural de nuestro país, fomentando el respeto y la alegría en cada actividad. Que este Carnaval nos inspire a seguir cultivando el espíritu de unidad, trabajo en equipo y el amor por lo que somos.</p>
+            </div>
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <div class="carousel-slide active">
+                        <img src="../img/actividades/carnaval/carnaval-01.jpeg" alt="Carnaval 1">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="../img/actividades/carnaval/carnaval-02.jpeg" alt="Carnaval 2">
+                    </div>
+                </div>
+                <button class="carousel-button prev" type="button">&#10094;</button>
+                <button class="carousel-button next" type="button">&#10095;</button>
+                <div class="carousel-dots"></div>
+            </div>
+        </article>
+
+        <!-- ACTIVIDAD 2: DIA DE LA MUJER -->
+        <article class="activity activity-reverse">
+            <div class="activity-info">
+                <span class="activity-category">ACTIVIDAD ESCOLAR</span>
+                <h2>DÍA DE LA MUJER</h2>
+                <p>En esta actividad conmemoramos el Día de la Mujer, promoviendo en los estudiantes la reflexión sobre la importancia del respeto, la igualdad y el reconocimiento del papel fundamental de la mujer en la sociedad. A través de diferentes dinámicas, como conversaciones, actividades creativas y expresiones artísticas, los estudiantes pudieron compartir sus ideas y valorar los aportes de las mujeres en distintos ámbitos. Esta jornada fortaleció valores como la empatía, la inclusión y la equidad.</p>
+            </div>
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <div class="carousel-slide active">
+                        <img src="../img/actividades/dia-mujer/mujer-01.jpeg" alt="Día de la Mujer">
+                    </div>
+                </div>
+                <button class="carousel-button prev" type="button">&#10094;</button>
+                <button class="carousel-button next" type="button">&#10095;</button>
+                <div class="carousel-dots"></div>
+            </div>
+        </article>
+
+        <!-- ACTIVIDAD 3: PERSONERITO -->
+        <article class="activity">
+            <div class="activity-info">
+                <span class="activity-category">PROYECTO DE DEMOCRACIA</span>
+                <h2>CANDIDATOS A PERSONERITO SAN JOSÉ 2026</h2>
+                <p>En el marco del proyecto de democracia escolar, los estudiantes participaron activamente en la elección de los candidatos a personerito San José 2026. Esta actividad permitió fortalecer valores como la participación, la responsabilidad y el respeto por la opinión de los demás. Los estudiantes conocieron la importancia de los procesos democráticos, presentaron sus propuestas y compartieron sus ideas con la comunidad educativa, fomentando así el liderazgo y el compromiso ciudadano desde temprana edad.</p>
+            </div>
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <div class="carousel-slide active">
+                        <img src="../img/actividades/personerito/personerito-01.jpeg" alt="Candidato 1">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="../img/actividades/personerito/personerito-02.jpeg" alt="Candidato 2">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="../img/actividades/personerito/personerito-03.jpeg" alt="Candidato 3">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="../img/actividades/personerito/personerito-04.jpeg" alt="Candidato 4">
+                    </div>
+                </div>
+                <button class="carousel-button prev" type="button">&#10094;</button>
+                <button class="carousel-button next" type="button">&#10095;</button>
+                <div class="carousel-dots"></div>
+            </div>
+        </article>
+
+        <!-- ACTIVIDAD 4: ELECCIONES -->
+        <article class="activity activity-reverse">
+            <div class="activity-info">
+                <span class="activity-category">PARTICIPACIÓN ESTUDIANTIL</span>
+                <h2>PROYECTO OBLIGATORIO DE DEMOCRACIA</h2>
+                <p><strong>ELECCIONES DE PERSONERÍA ESTUDIANTIL</strong><br><strong>27 DE MARZO DE 2026</strong></p>
+                <p>En esta jornada democrática se llevaron a cabo las elecciones de personería estudiantil, donde los estudiantes ejercieron su derecho al voto de manera responsable y organizada.</p>
+                <p>Esta actividad permitió fortalecer la participación, el respeto por la democracia y la toma de decisiones colectivas.</p>
+                
+                <!-- Documento Drive comprimido dentro de la tarjeta -->
+                <div class="documento-drive">
+                    <div class="documento-drive-header" style="margin-bottom: 15px;">
+                        <span class="documento-icon" aria-hidden="true"><i class="bi bi-file-earmark-pdf-fill"></i></span>
+                        <div>
+                            <span class="documento-label" style="font-size: 11px; letter-spacing: 2px; color: #777; font-weight: 600;">DOCUMENTACIÓN</span>
+                            <h3 style="font-family: 'Playfair Display', serif; color: var(--primary); margin: 5px 0; font-size: 1.2rem;">DOCUMENTO DE LA ACTIVIDAD</h3>
+                        </div>
+                    </div>
+                    <div class="documento-frame">
+                        <iframe src="https://drive.google.com/file/d/1H6P1jgYdCtwIGuaY6WMzx0BLm2llll_X/preview" title="Documento de Google Drive" loading="lazy" allow="autoplay" style="width: 100%; height: 200px; border: none; border-radius: 12px;"></iframe>
+                    </div>
                 </div>
             </div>
-            <button class="carousel-button prev" type="button">&#10094;</button>
-            <button class="carousel-button next" type="button">&#10095;</button>
-            <div class="carousel-dots"></div>
-        </div>
-    </section>
-
-    <!-- 03 - CARNAVAL -->
-    <section class="activity">
-        <div class="activity-info">
-            <span class="activity-number">03</span>
-            <h2>CARNAVAL 2025</h2>
-            <p>En esta fiesta llena de color y ritmo, celebramos la riqueza cultural de nuestro país, fomentando el respeto y la alegría en cada actividad. Que este Carnaval nos inspire a seguir cultivando el espíritu de unidad, trabajo en equipo y el amor por lo que somos.</p>
-        </div>
-        <div class="carousel" data-carousel>
-            <div class="carousel-track">
-                <div class="carousel-slide active">
-                    <img src="../img/2025/carnaval/image.png" alt="Carnaval 2025">
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <div class="carousel-slide active">
+                        <img src="../img/actividades/elecciones/elecciones-01.jpeg" alt="Elecciones de personería estudiantil 2026">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="../img/actividades/elecciones/elecciones-02.jpeg" alt="Jornada de elecciones estudiantiles 2026">
+                    </div>
                 </div>
-                <div class="carousel-slide">
-                    <img src="../img/2025/carnaval/image copy.png" alt="Carnaval 2025">
-                </div>
-                <div class="carousel-slide">
-                    <img src="../img/2025/carnaval/image copy 2.png" alt="Carnaval 2025">
-                </div>
-                <div class="carousel-slide">
-                    <img src="../img/2025/carnaval/image copy 3.png" alt="Carnaval 2025">
-                </div>
+                <button class="carousel-button prev" type="button" aria-label="Fotografía anterior">&#10094;</button>
+                <button class="carousel-button next" type="button" aria-label="Fotografía siguiente">&#10095;</button>
+                <div class="carousel-dots"></div>
             </div>
-            <button class="carousel-button prev" type="button">&#10094;</button>
-            <button class="carousel-button next" type="button">&#10095;</button>
-            <div class="carousel-dots"></div>
-        </div>
-    </section>
+        </article>
 
-    <!-- 04 - DIA DE LA MUJER -->
-    <section class="activity activity-reverse">
-        <div class="activity-info">
-            <span class="activity-number">04</span>
-            <h2>DÍA DE LA MUJER 2025</h2>
-            <p>Hoy celebramos la fuerza, la sabiduría y el amor que las mujeres aportan al mundo. Que cada día sea una oportunidad para reconocer y honrar su invaluable contribución en todas las áreas de la vida. En este 8 de marzo, Día de la Mujer, agradecemos su valentía, su dedicación y su impacto transformador en nuestra sociedad.</p>
-        </div>
-        <div class="carousel" data-carousel>
-            <div class="carousel-track">
-                <div class="carousel-slide active">
-                    <img src="../img/2025/dia-mujer/image.png" alt="Día de la Mujer 2025">
-                </div>
+        <!-- ACTIVIDAD 5: FESTIVAL DEL DULCE -->
+        <article class="activity">
+            <div class="activity-info">
+                <span class="activity-category">ACTIVIDAD ESCOLAR</span>
+                <h2>FESTIVAL DEL DULCE</h2>
+                <p>En esta actividad, los estudiantes participaron en el Festival del Dulce, un espacio lleno de creatividad, tradición y trabajo en equipo. A través de la preparación y exposición de diferentes dulces, se promovieron valores como la colaboración, la responsabilidad y el emprendimiento. Además, esta jornada permitió fortalecer la convivencia escolar y rescatar costumbres culturales, generando un ambiente de alegría y aprendizaje significativo.</p>
             </div>
-            <button class="carousel-button prev" type="button">&#10094;</button>
-            <button class="carousel-button next" type="button">&#10095;</button>
-            <div class="carousel-dots"></div>
-        </div>
-    </section>
-
-    <!-- 05 - VIVIENDO EN VALORES -->
-    <section class="activity">
-        <div class="activity-info">
-            <span class="activity-number">05</span>
-            <h2>LANZAMIENTO DEL PROYECTO PEDAGÓGICO: VIVIENDO EN VALORES</h2>
-            <p>Se realizó con éxito el lanzamiento del proyecto “Viviendo en Valores”, una iniciativa que busca fortalecer la formación ética de los estudiantes mediante la práctica diaria de valores como el respeto, la responsabilidad y la solidaridad. A través de actividades participativas, se promovió la reflexión y el compromiso con una mejor convivencia escolar.</p>
-        </div>
-        <div class="carousel" data-carousel>
-            <div class="carousel-track">
-                <div class="carousel-slide active">
-                    <img src="../img/2025/viviendo-valores/image.png" alt="Proyecto Viviendo en Valores">
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <div class="carousel-slide active">
+                        <img src="../img/actividades/festival-dulce/dulce -01.jpeg" alt="Festival del Dulce">
+                    </div>
                 </div>
-                <div class="carousel-slide">
-                    <img src="../img/2025/viviendo-valores/image copy.png" alt="Proyecto Viviendo en Valores">
-                </div>
+                <button class="carousel-button prev" type="button">&#10094;</button>
+                <button class="carousel-button next" type="button">&#10095;</button>
+                <div class="carousel-dots"></div>
             </div>
-            <button class="carousel-button prev" type="button">&#10094;</button>
-            <button class="carousel-button next" type="button">&#10095;</button>
-            <div class="carousel-dots"></div>
-        </div>
-    </section>
+        </article>
 
-    <!-- 06 - DIA DE LA TIERRA -->
-    <section class="activity activity-reverse">
-        <div class="activity-info">
-            <span class="activity-number">06</span>
-            <h2>22 DE ABRIL DÍA DE NUESTRO PLANETA TIERRA</h2>
-            <p>Hoy rendimos homenaje a nuestro planeta, fuente de vida, inspiración y equilibrio. Cada 22 de abril nos invita a tomar conciencia sobre la importancia de preservar los recursos naturales y proteger el medio ambiente. En este Día de la Tierra, reafirmamos nuestro compromiso de actuar con responsabilidad, sembrando hoy las acciones que darán frutos de esperanza para las generaciones futuras.</p>
-        </div>
-        <div class="carousel" data-carousel>
-            <div class="carousel-track">
-                <div class="carousel-slide active">
-                    <img src="../img/2025/dia-tierra/image.png" alt="Día de la Tierra">
-                </div>
-                <div class="carousel-slide">
-                    <img src="../img/2025/dia-tierra/image copy.png" alt="Día de la Tierra">
-                </div>
+        <!-- ACTIVIDAD 6: REYES DE LOS VALORES -->
+        <article class="activity activity-reverse">
+            <div class="activity-info">
+                <span class="activity-category">REYNADO LOS VALORES</span>
+                <h2>REYES DE LOS VALORES: GRATITUD</h2>
+                <p>En esta actividad, los estudiantes participaron en una jornada dedicada al valor de la gratitud, reconociendo la importancia de agradecer, valorar a quienes nos rodean y expresar aprecio por las acciones y oportunidades que recibimos. A través de diferentes actividades, se promovió la reflexión sobre cómo la gratitud contribuye a fortalecer las relaciones, la convivencia y el respeto dentro de la comunidad educativa.</p>
             </div>
-            <button class="carousel-button prev" type="button">&#10094;</button>
-            <button class="carousel-button next" type="button">&#10095;</button>
-            <div class="carousel-dots"></div>
-        </div>
-    </section>
-
-    <!-- 07 - MOVIMIENTOS DE LA TIERRA -->
-    <section class="activity">
-        <div class="activity-info">
-            <span class="activity-number">07</span>
-            <h2>EXPOSICIÓN: MOVIMIENTOS DE LA TIERRA</h2>
-            <p>Durante la jornada académica, los estudiantes realizaron una exposición sobre los movimientos de la Tierra, con el objetivo de comprender los fenómenos astronómicos que influyen en la vida del planeta, como el día y la noche, las estaciones del año y la duración del año solar.</p>
-            <p>A través de maquetas, carteles y explicaciones orales, los estudiantes demostraron su comprensión sobre la rotación y traslación de la Tierra, fortaleciendo sus habilidades comunicativas, el trabajo en equipo y la expresión oral. La actividad permitió vincular la teoría con la práctica y despertar el interés por las ciencias naturales y el estudio del universo.</p>
-        </div>
-        <div class="carousel" data-carousel>
-            <div class="carousel-track">
-                <div class="carousel-slide active">
-                    <img src="../img/2025/movimientos-tierra/image.png" alt="Exposición movimientos de la Tierra">
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <div class="carousel-slide active">
+                        <img src="../img/actividades/reynado-valores/reynado-01.jpg" alt="Reyes de los valores 1">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="../img/actividades/reynado-valores/reynado-02.jpg" alt="Reyes de los valores 2">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="../img/actividades/reynado-valores/reynado-03.jpg" alt="Reyes de los valores 3">
+                    </div>
                 </div>
-                <div class="carousel-slide">
-                    <img src="../img/2025/movimientos-tierra/image copy.png" alt="Exposición movimientos de la Tierra">
-                </div>
-                <div class="carousel-slide">
-                    <img src="../img/2025/movimientos-tierra/image copy 2.png" alt="Exposición movimientos de la Tierra">
-                </div>
+                <button class="carousel-button prev" type="button">&#10094;</button>
+                <button class="carousel-button next" type="button">&#10095;</button>
+                <div class="carousel-dots"></div>
             </div>
-            <button class="carousel-button prev" type="button">&#10094;</button>
-            <button class="carousel-button next" type="button">&#10095;</button>
-            <div class="carousel-dots"></div>
-        </div>
-    </section>
+        </article>
 
-    <!-- 08 - RELIEVE COLOMBIANO -->
-    <section class="activity activity-reverse">
-        <div class="activity-info">
-            <span class="activity-number">08</span>
-            <h2>RELIEVE COLOMBIANO</h2>
-            <p>Los estudiantes del grado 5° participaron en una jornada de aprendizaje dedicada al estudio del relieve colombiano, con el propósito de reconocer la diversidad geográfica de nuestro país y comprender la importancia de sus principales formaciones naturales.</p>
-            <p>Durante la actividad, los niños identificaron las tres grandes regiones montañosas del territorio nacional: la cordillera Occidental, la cordillera Central y la cordillera Oriental. También aprendieron sobre los valles, llanuras, sierras y depresiones que conforman el paisaje colombiano.</p>
-            <p>A través de maquetas, mapas y presentaciones, los estudiantes representaron de forma creativa las diferentes formas del relieve, fortaleciendo sus conocimientos en ciencias sociales y su sentido de pertenencia por el territorio nacional.</p>
-        </div>
-        <div class="carousel" data-carousel>
-            <div class="carousel-track">
-                <div class="carousel-slide active">
-                    <img src="../img/2025/relieve-colombiano/image.png" alt="Relieve colombiano">
-                </div>
-                <div class="carousel-slide">
-                    <img src="../img/2025/relieve-colombiano/image copy.png" alt="Relieve colombiano">
-                </div>
+        <!-- ACTIVIDAD 7: 20 DE JULIO -->
+        <article class="activity">
+            <div class="activity-info">
+                <span class="activity-category">ACTIVIDAD ESCOLAR</span>
+                <h2>20 DE JULIO 2026</h2>
+                <p>Conmemoramos el 20 de Julio, Día de la Independencia de Colombia, recordando este importante acontecimiento de nuestra historia. Los estudiantes participaron con entusiasmo en actividades que fortalecieron el conocimiento, el sentido de pertenencia y el amor por nuestra patria.</p>
             </div>
-            <button class="carousel-button prev" type="button">&#10094;</button>
-            <button class="carousel-button next" type="button">&#10095;</button>
-            <div class="carousel-dots"></div>
-        </div>
-    </section>
-
-    <!-- 09 - DIA DEL NIÑO -->
-    <section class="activity">
-        <div class="activity-info">
-            <span class="activity-number">09</span>
-            <h2>DÍA DEL NIÑO MAYO 02/2025</h2>
-            <p>El pasado 2 de mayo celebramos con alegría el Día del Niño, una jornada dedicada a reconocer la importancia de la infancia y promover sus derechos. Con juegos, actividades recreativas y momentos llenos de diversión, los estudiantes disfrutaron de un espacio pensado para resaltar su valor y alegría en nuestra comunidad educativa.</p>
-        </div>
-        <div class="carousel" data-carousel>
-            <div class="carousel-track">
-                <div class="carousel-slide active">
-                    <img src="../img/2025/dia-nino/image.png" alt="Día del Niño 2025">
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <div class="carousel-slide active">
+                        <img src="../img/actividades/20dejulio/20dejulio01.jpg" alt="20 de julio 1">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="../img/actividades/20dejulio/20dejulio02.jpg" alt="20 de julio 2">
+                    </div>
                 </div>
-                <div class="carousel-slide">
-                    <img src="../img/2025/dia-nino/image copy.png" alt="Día del Niño 2025">
-                </div>
+                <button class="carousel-button prev" type="button">&#10094;</button>
+                <button class="carousel-button next" type="button">&#10095;</button>
+                <div class="carousel-dots"></div>
             </div>
-            <button class="carousel-button prev" type="button">&#10094;</button>
-            <button class="carousel-button next" type="button">&#10095;</button>
-            <div class="carousel-dots"></div>
-        </div>
-    </section>
+        </article>
 
-    <!-- 10 - NEURONAS -->
-    <section class="activity activity-reverse">
-        <div class="activity-info">
-            <span class="activity-number">10</span>
-            <h2>ELABORO NEURONAS UTILIZANDO MI CREATIVIDAD – GRADO 5°02</h2>
-            <p>Los estudiantes del grado 5°02 elaboran representaciones de neuronas empleando diferentes materiales y toda su creatividad. A través de esta actividad, reconocen las partes principales de la neurona: cuerpo celular, dendritas y axón, y comprenden su importancia en el funcionamiento del sistema nervioso.</p>
-            <p>Además, desarrollan habilidades manuales, refuerzan su aprendizaje de ciencias naturales y ponen en práctica la imaginación para crear modelos únicos y coloridos.</p>
-        </div>
-        <div class="carousel" data-carousel>
-            <div class="carousel-track">
-                <div class="carousel-slide active">
-                    <img src="../img/2025/neuronas/image.png" alt="Elaboración de neuronas">
-                </div>
-                <div class="carousel-slide">
-                    <img src="../img/2025/neuronas/image copy.png" alt="Elaboración de neuronas">
-                </div>
-                <div class="carousel-slide">
-                    <img src="../img/2025/neuronas/image copy 2.png" alt="Elaboración de neuronas">
-                </div>
+        <!-- ACTIVIDAD 8: SISTEMAS HUMANOS -->
+        <article class="activity activity-reverse">
+            <div class="activity-info">
+                <span class="activity-category">ACTIVIDAD ESCOLAR</span>
+                <h2>EXPOSICIONES DEL SISTEMA RESPIRATORIO Y DIGESTIVO</h2>
+                <p>Los estudiantes realizaron exposiciones sobre el sistema respiratorio y el sistema digestivo, donde explicaron de manera creativa sus principales órganos, funciones e importancia para el buen funcionamiento de nuestro cuerpo. Esta actividad permitió fortalecer sus conocimientos, la expresión oral y la confianza al compartir lo aprendido con sus compañeros.</p>
             </div>
-            <button class="carousel-button prev" type="button">&#10094;</button>
-            <button class="carousel-button next" type="button">&#10095;</button>
-            <div class="carousel-dots"></div>
-        </div>
-    </section>
-
-    <!-- 11 - CIRCUITOS -->
-    <section class="activity">
-        <div class="activity-info">
-            <span class="activity-number">11</span>
-            <h2>CIRCUITOS ELÉCTRICOS – GRADO 5</h2>
-            <p>Los estudiantes del grado 5° participaron en una interesante actividad práctica sobre circuitos eléctricos, con el propósito de comprender cómo se produce, transmite y utiliza la energía eléctrica en la vida cotidiana.</p>
-            <p>Durante la jornada, los niños elaboraron circuitos simples utilizando pilas, cables y bombillos, observando de manera directa cómo fluye la corriente eléctrica. Esta experiencia les permitió aplicar conceptos básicos de ciencias naturales, desarrollar el pensamiento lógico y fortalecer la curiosidad científica.</p>
-        </div>
-        <div class="carousel" data-carousel>
-            <div class="carousel-track">
-                <div class="carousel-slide active">
-                    <img src="../img/2025/circuitos/image.png" alt="Circuitos eléctricos grado 5">
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <div class="carousel-slide active">
+                        <img src="../img/actividades/exposistemas/exsistemadigestivo01.jpg" alt="Sistema Digestivo 1">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="../img/actividades/exposistemas/exsistemadigestivo02.jpg" alt="Sistema Digestivo 2">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="../img/actividades/exposistemas/exsistemarespiratorio01.jpg" alt="Sistema Respiratorio 1">
+                    </div>
                 </div>
-                <div class="carousel-slide">
-                    <img src="../img/2025/circuitos/image copy.png" alt="Circuitos eléctricos grado 5">
-                </div>
+                <button class="carousel-button prev" type="button">&#10094;</button>
+                <button class="carousel-button next" type="button">&#10095;</button>
+                <div class="carousel-dots"></div>
             </div>
-            <button class="carousel-button prev" type="button">&#10094;</button>
-            <button class="carousel-button next" type="button">&#10095;</button>
-            <div class="carousel-dots"></div>
-        </div>
-    </section>
+        </article>
 
-    <!-- 12 - MÁQUINAS SIMPLES -->
-    <section class="activity activity-reverse">
-        <div class="activity-info">
-            <span class="activity-number">12</span>
-            <h2>COMPARTO MIS EXPERIENCIAS A TRAVÉS DE EXPOSICIONES DEL TEMA MÁQUINAS SIMPLES</h2>
-            <p>En esta actividad, los estudiantes comparten sus experiencias y aprendizajes sobre el tema de las máquinas simples mediante exposiciones creativas y participativas.</p>
-            <p>A través de maquetas, demostraciones, explicaciones orales y recursos visuales, los estudiantes explican el funcionamiento y la utilidad de palancas, poleas, planos inclinados, entre otros mecanismos. Esta estrategia promueve la expresión oral, el pensamiento científico y el desarrollo de competencias comunicativas.</p>
-        </div>
-        <div class="carousel" data-carousel>
-            <div class="carousel-track">
-                <div class="carousel-slide active">
-                    <img src="../img/2025/maquinas-simples/image.png" alt="Exposición máquinas simples">
-                </div>
-                <div class="carousel-slide">
-                    <img src="../img/2025/maquinas-simples/image copy.png" alt="Exposición máquinas simples">
-                </div>
+        <!-- ACTIVIDAD 9: LAS PLANTAS -->
+        <article class="activity">
+            <div class="activity-info">
+                <span class="activity-category">ACTIVIDAD ESCOLAR</span>
+                <h2>EXPOSICIÓN LAS PLANTAS</h2>
+                <p>Los estudiantes participaron con entusiasmo en una exposición sobre las plantas, donde tuvieron la oportunidad de aprender y compartir sus conocimientos sobre sus partes, características, importancia y cuidados. Esta actividad permitió fortalecer la expresión oral, la creatividad y el interés por el cuidado y la conservación de la naturaleza.</p>
             </div>
-            <button class="carousel-button prev" type="button">&#10094;</button>
-            <button class="carousel-button next" type="button">&#10095;</button>
-            <div class="carousel-dots"></div>
-        </div>
-    </section>
-
-    <!-- 13 - INTELIGENCIA ARTIFICIAL -->
-    <section class="activity">
-        <div class="activity-info">
-            <span class="activity-number">13</span>
-            <h2>DÍA DE LA INTELIGENCIA ARTIFICIAL (IA)</h2>
-            <p>Con el propósito de fomentar el conocimiento y la curiosidad por la tecnología, los estudiantes participaron en la conmemoración del Día de la Inteligencia Artificial (IA), una jornada dedicada a explorar cómo la innovación y la ciencia transforman el mundo actual.</p>
-            <p>Durante la actividad, los estudiantes aprendieron sobre el funcionamiento básico de la inteligencia artificial y sus aplicaciones en la vida cotidiana, como la robótica, los asistentes virtuales y el análisis de datos.</p>
-            <p>A través de videos, charlas y dinámicas interactivas, se promovió el pensamiento crítico, la creatividad y el uso responsable de la tecnología.</p>
-        </div>
-        <div class="carousel" data-carousel>
-            <div class="carousel-track">
-                <div class="carousel-slide active">
-                    <img src="../img/2025/inteligencia-artificial/image.png" alt="Día de la Inteligencia Artificial">
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <div class="carousel-slide active">
+                        <img src="../img/actividades/expoplantas/explantas01.jpg" alt="Planta 1">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="../img/actividades/expoplantas/explantas02.jpg" alt="Planta 2">
+                    </div>
                 </div>
-                <div class="carousel-slide">
-                    <img src="../img/2025/inteligencia-artificial/image copy.png" alt="Día de la Inteligencia Artificial">
-                </div>
+                <button class="carousel-button prev" type="button">&#10094;</button>
+                <button class="carousel-button next" type="button">&#10095;</button>
+                <div class="carousel-dots"></div>
             </div>
-            <button class="carousel-button prev" type="button">&#10094;</button>
-            <button class="carousel-button next" type="button">&#10095;</button>
-            <div class="carousel-dots"></div>
-        </div>
-    </section>
+        </article>
 
-    <!-- 14 - CÉLULAS (CORREGIDO: ahora sí tiene carrusel completo) -->
-    <section class="activity activity-reverse">
-        <div class="activity-info">
-            <span class="activity-number">14</span>
-            <h2>EXPOSICIÓN GRADO 5 – CÉLULAS</h2>
-            <p>En el marco del área de Ciencias Naturales, los estudiantes de grado 5° realizaron una exposición sobre las células, enfocándose en su estructura, tipos y funciones.</p>
-            <p>A través de maquetas, dibujos, presentaciones orales y materiales didácticos, se explicaron las diferencias entre la célula animal y vegetal, así como la importancia de esta unidad básica de la vida.</p>
-            <p>La actividad permitió fortalecer habilidades científicas como la observación, la clasificación y la comunicación, promoviendo un aprendizaje activo y colaborativo.</p>
-        </div>
-        <div class="carousel" data-carousel>
-            <div class="carousel-track">
-                <div class="carousel-slide active">
-                    <img src="../img/2025/celulas/image.png" alt="Exposición sobre las células">
-                </div>
+        <!-- ACTIVIDAD 10: DÍA DEL ESTUDIANTE -->
+        <article class="activity activity-reverse">
+            <div class="activity-info">
+                <span class="activity-category">ACTIVIDAD ESCOLAR</span>
+                <h2>DÍA DEL ESTUDIANTE E INICIO DE LAS VACACIONES</h2>
+                <p>Celebramos el Día del Estudiante con alegría y entusiasmo, compartiendo momentos especiales antes de dar inicio a las vacaciones. ¡Felices vacaciones para todos!</p>
             </div>
-            <button class="carousel-button prev" type="button">&#10094;</button>
-            <button class="carousel-button next" type="button">&#10095;</button>
-            <div class="carousel-dots"></div>
-        </div>
-    </section>
-
-    <!-- 15 - IZADA DÍA DE LAS MADRES -->
-    <section class="activity">
-        <div class="activity-info">
-            <span class="activity-number">15</span>
-            <h2>IZADA DE BANDERA – 22 DE MAYO / CONMEMORACIÓN DEL DÍA DE LAS MADRES</h2>
-            <p>Hoy, 22 de mayo, nos reunimos en esta solemne izada de bandera para rendir homenaje a las madres, figuras insustituibles en nuestras vidas y pilares fundamentales de la familia y la sociedad.</p>
-            <p>En este acto, reconocemos con profundo respeto y gratitud el amor incondicional, la fortaleza, el sacrificio y la dedicación de todas las madres.</p>
-        </div>
-        <div class="carousel" data-carousel>
-            <div class="carousel-track">
-                <div class="carousel-slide active">
-                    <img src="../img/2025/dia-madres/image.png" alt="Izada de bandera Día de las Madres">
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <div class="carousel-slide active"><img src="../img/actividades/Diadelestudiante/diaestudiante01.jpg" alt="Día del Estudiante 1"></div>
+                    <div class="carousel-slide"><img src="../img/actividades/Diadelestudiante/diaestudiante02.jpg" alt="Día del Estudiante 2"></div>
+                    <div class="carousel-slide"><img src="../img/actividades/Diadelestudiante/diaestudiante03.jpg" alt="Día del Estudiante 3"></div>
+                    <div class="carousel-slide"><img src="../img/actividades/Diadelestudiante/diaestudiante04.jpg" alt="Día del Estudiante 4"></div>
+                    <div class="carousel-slide"><img src="../img/actividades/Diadelestudiante/diaestudiante05.jpg" alt="Día del Estudiante 5"></div>
                 </div>
-                <div class="carousel-slide">
-                    <img src="../img/2025/dia-madres/image copy.png" alt="Izada de bandera Día de las Madres">
-                </div>
+                <button class="carousel-button prev" type="button">&#10094;</button>
+                <button class="carousel-button next" type="button">&#10095;</button>
+                <div class="carousel-dots"></div>
             </div>
-            <button class="carousel-button prev" type="button">&#10094;</button>
-            <button class="carousel-button next" type="button">&#10095;</button>
-            <div class="carousel-dots"></div>
-        </div>
-    </section>
+        </article>
 
-    <!-- 16 - TALLER RELIGIÓN -->
-    <section class="activity activity-reverse">
-        <div class="activity-info">
-            <span class="activity-number">16</span>
-            <h2>TALLER DE COMPRENSIÓN LECTORA EN LA ASIGNATURA DE RELIGIÓN</h2>
-            <p>En este taller de comprensión lectora de la asignatura de Religión, los estudiantes fortalecieron su capacidad para leer, entender y reflexionar sobre textos con mensajes de fe, valores y enseñanzas cristianas.</p>
-            <p>A través de cuentos bíblicos, actividades dinámicas y preguntas reflexivas, los niños desarrollaron habilidades lectoras mientras aprendían sobre el amor, la solidaridad, el respeto y otros valores importantes para su vida diaria.</p>
-        </div>
-        <div class="carousel" data-carousel>
-            <div class="carousel-track">
-                <div class="carousel-slide active">
-                    <img src="../img/2025/comprension-religion/image.png" alt="Taller de comprensión lectora en Religión">
-                </div>
+        <!-- ACTIVIDAD 11: 7 DE AGOSTO -->
+        <article class="activity">
+            <div class="activity-info">
+                <span class="activity-category">ACTIVIDAD ESCOLAR</span>
+                <h2>7 DE AGOSTO</h2>
+                <p>Conmemoramos el 7 de agosto, Día de la Batalla de Boyacá, mediante una actividad pedagógica que permitió a nuestros estudiantes acercarse a este acontecimiento fundamental de la historia de Colombia.</p>
+                <p>A través de actividades lúdicas y participativas, los estudiantes conocieron algunos de los personajes y acontecimientos más importantes de esta fecha, fortaleciendo sus conocimientos sobre nuestra historia.</p>
             </div>
-            <button class="carousel-button prev" type="button">&#10094;</button>
-            <button class="carousel-button next" type="button">&#10095;</button>
-            <div class="carousel-dots"></div>
-        </div>
-    </section>
-
-    <!-- 17 - FORO EDUCATIVO -->
-    <section class="activity">
-        <div class="activity-info">
-            <span class="activity-number">17</span>
-            <h2>PARTICIPACIÓN EN EL FORO EDUCATIVO – SECRETARÍA DE EDUCACIÓN MUNICIPAL</h2>
-            <p>Con el objetivo de fortalecer las competencias comunicativas y promover el pensamiento reflexivo, se participó en el Foro Educativo organizado por la Secretaría de Educación Municipal, cuyo eje temático fue “La lectura crítica en el aula”.</p>
-            <p>Durante este espacio académico, se compartieron experiencias pedagógicas centradas en estrategias para fomentar la comprensión lectora, el análisis y la interpretación de textos en diferentes contextos.</p>
-            <p>Esta participación permitió intercambiar saberes entre docentes, reconocer buenas prácticas educativas y reafirmar la importancia de la lectura crítica como herramienta fundamental para el aprendizaje significativo y la formación integral de los estudiantes.</p>
-        </div>
-        <div class="carousel" data-carousel>
-            <div class="carousel-track">
-                <div class="carousel-slide active">
-                    <img src="../img/2025/foro-educativo/image.png" alt="Foro Educativo">
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <div class="carousel-slide active"><img src="../img/actividades/7deagosto/7agosto01.jpg" alt="7 de Agosto 1"></div>
+                    <div class="carousel-slide"><img src="../img/actividades/7deagosto/7agosto02.jpg" alt="7 de Agosto 2"></div>
+                    <div class="carousel-slide"><img src="../img/actividades/7deagosto/7agosto03.jpg" alt="7 de Agosto 3"></div>
                 </div>
-                <div class="carousel-slide">
-                    <img src="../img/2025/foro-educativo/image copy.png" alt="Foro Educativo">
-                </div>
+                <button class="carousel-button prev" type="button">&#10094;</button>
+                <button class="carousel-button next" type="button">&#10095;</button>
+                <div class="carousel-dots"></div>
             </div>
-            <button class="carousel-button prev" type="button">&#10094;</button>
-            <button class="carousel-button next" type="button">&#10095;</button>
-            <div class="carousel-dots"></div>
-        </div>
-    </section>
+        </article>
 
-    <!-- 18 - DOCENTES GRADO 4 -->
-    <section class="activity activity-reverse">
-        <div class="activity-info">
-            <span class="activity-number">18</span>
-            <h2>TRABAJO EN EQUIPO DE LOS DOCENTES DE LOS GRADOS 4</h2>
-            <p>Los docentes de los grados 4 nos unimos para fortalecer el trabajo en equipo, buscando siempre la excelencia en nuestra labor educativa.</p>
-            <p>A través de la colaboración, compartimos conocimientos y nos apoyamos mutuamente para crear un ambiente de aprendizaje positivo y enriquecedor para nuestros estudiantes. El éxito de cada uno de nosotros es el éxito de todos.</p>
-        </div>
-        <div class="carousel" data-carousel>
-            <div class="carousel-track">
-                <div class="carousel-slide active">
-                    <img src="../img/2025/docentes-grado-4/image.png" alt="Trabajo en equipo docentes grado 4">
-                </div>
+        <!-- ACTIVIDAD 12: AMOR Y AMISTAD -->
+        <article class="activity activity-reverse">
+            <div class="activity-info">
+                <span class="activity-category">ACTIVIDAD ESCOLAR</span>
+                <h2>AMOR Y AMISTAD</h2>
+                <p>En el marco del Día del Amor y la Amistad, organizamos una actividad que permitió a nuestros estudiantes reflexionar sobre la importancia de estos valores en su vida diaria.</p>
+                <p>A través de juegos, dibujos y conversaciones grupales, los estudiantes exploraron conceptos como el respeto, la empatía y la cooperación, fortaleciendo sus habilidades sociales y emocionales.</p>
             </div>
-            <button class="carousel-button prev" type="button">&#10094;</button>
-            <button class="carousel-button next" type="button">&#10095;</button>
-            <div class="carousel-dots"></div>
-        </div>
-    </section>
-
-    <!-- 19 - DINÁMICA -->
-    <section class="activity">
-        <div class="activity-info">
-            <span class="activity-number">19</span>
-            <h2>DINÁMICA ANTES DE INICIAR LA CLASE</h2>
-            <p>Actividad lúdica y participativa que se realiza al comienzo de la jornada escolar con el propósito de motivar a los estudiantes, generar un ambiente de confianza, promover la integración del grupo y preparar la disposición positiva hacia el aprendizaje.</p>
-        </div>
-        <div class="carousel" data-carousel>
-            <div class="carousel-track">
-                <div class="carousel-slide active">
-                    <img src="../img/2025/dinamica/image.png" alt="Dinámica antes de iniciar la clase">
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <div class="carousel-slide active"><img src="../img/actividades/amor y amistad/amor y amistad 1.jpeg" alt="Amor y Amistad 1"></div>
+                    <div class="carousel-slide"><img src="../img/actividades/amor y amistad/amor y amistad.jpeg" alt="Amor y Amistad 2"></div>
                 </div>
+                <button class="carousel-button prev" type="button">&#10094;</button>
+                <button class="carousel-button next" type="button">&#10095;</button>
+                <div class="carousel-dots"></div>
             </div>
-            <button class="carousel-button prev" type="button">&#10094;</button>
-            <button class="carousel-button next" type="button">&#10095;</button>
-            <div class="carousel-dots"></div>
-        </div>
-    </section>
+        </article>
 
-    <!-- 20 - REUNIÓN DOCENTES -->
-    <section class="activity activity-reverse">
-        <div class="activity-info">
-            <span class="activity-number">20</span>
-            <h2>REUNIÓN DE DOCENTES DE BÁSICA PRIMARIA – SEDES MARÍA EUGENIA, SAN JOSÉ Y LEYDA GARRIDO</h2>
-            <p>Espacio de encuentro académico y pedagógico con los docentes de básica primaria de las sedes María Eugenia, San José y Leyda Garrido, orientado a fortalecer la planeación institucional, socializar estrategias didácticas, analizar procesos de enseñanza-aprendizaje y fomentar el trabajo colaborativo en pro de la calidad educativa.</p>
-        </div>
-        <div class="carousel" data-carousel>
-            <div class="carousel-track">
-                <div class="carousel-slide active">
-                    <img src="../img/2025/reunion-docentes/image.png" alt="Reunión de docentes de básica primaria">
-                </div>
+        <!-- ACTIVIDAD 13: ANUNCIOS PUBLICITARIOS -->
+        <article class="activity">
+            <div class="activity-info">
+                <span class="activity-category">ACTIVIDAD ESCOLAR</span>
+                <h2>ELABORO ANUNCIOS PUBLICITARIOS</h2>
+                <p><strong>30 DE SEPTIEMBRE</strong></p>
+                <p>Los estudiantes elaboraron sus propios anuncios publicitarios, poniendo en práctica la creatividad, la expresión escrita y la argumentación. A través de esta actividad, aprendieron a identificar las características de un anuncio, a persuadir a su público y a comunicar ideas de manera clara y atractiva.</p>
             </div>
-            <button class="carousel-button prev" type="button">&#10094;</button>
-            <button class="carousel-button next" type="button">&#10095;</button>
-            <div class="carousel-dots"></div>
-        </div>
-    </section>
-
-    <!-- 21 - RULETA DE LAS ESTACIONES -->
-    <section class="activity">
-        <div class="activity-info">
-            <span class="activity-number">21</span>
-            <h2>RULETA DE LAS ESTACIONES</h2>
-            <p>Como parte del fortalecimiento del aprendizaje en ciencias naturales, los estudiantes participaron en la divertida y educativa actividad “Ruleta de las Estaciones”, cuyo objetivo fue reconocer y diferenciar las cuatro estaciones del año: primavera, verano, otoño e invierno.</p>
-            <p>A través de una ruleta, los niños giraban el tablero y respondían preguntas o realizaban retos relacionados con cada estación: su clima, características y los cambios que ocurren en la naturaleza.</p>
-            <p>Esta dinámica permitió que los estudiantes aprendieran de forma lúdica, participativa y significativa, reforzando su comprensión sobre los movimientos de la Tierra y sus efectos.</p>
-        </div>
-        <div class="carousel" data-carousel>
-            <div class="carousel-track">
-                <div class="carousel-slide active">
-                    <img src="../img/2025/ruleta-estaciones/image.png" alt="Ruleta de las estaciones">
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <div class="carousel-slide active"><img src="../img/actividades/anuncios-publicitarios/ anuncios publicitarios  (1).jpeg" alt="Anuncios publicitarios 1"></div>
+                    <div class="carousel-slide"><img src="../img/actividades/anuncios-publicitarios/ anuncios publicitarios  (2).jpeg" alt="Anuncios publicitarios 2"></div>
+                    <div class="carousel-slide"><img src="../img/actividades/anuncios-publicitarios/ anuncios publicitarios  (3).jpeg" alt="Anuncios publicitarios 3"></div>
                 </div>
-                <div class="carousel-slide">
-                    <img src="../img/2025/ruleta-estaciones/image copy.png" alt="Ruleta de las estaciones">
-                </div>
+                <button class="carousel-button prev" type="button">&#10094;</button>
+                <button class="carousel-button next" type="button">&#10095;</button>
+                <div class="carousel-dots"></div>
             </div>
-            <button class="carousel-button prev" type="button">&#10094;</button>
-            <button class="carousel-button next" type="button">&#10095;</button>
-            <div class="carousel-dots"></div>
-        </div>
-    </section>
+        </article>
 
-    <!-- 22 - SEGUNDA PRUEBA TRIMESTRAL -->
-    <section class="activity activity-reverse">
-        <div class="activity-info">
-            <span class="activity-number">22</span>
-            <h2>SEGUNDA PRUEBA TRIMESTRAL</h2>
-            <p>La Segunda Prueba Trimestral tiene como objetivo evaluar los contenidos trabajados durante el segundo trimestre del año escolar.</p>
-            <p>Esta evaluación incluirá preguntas de desarrollo, selección múltiple, verdadero o falso y/o resolución de problemas, según la
+        <!-- ACTIVIDAD 14: BAILE TÍPICO ALEMANIA -->
+        <article class="activity activity-reverse">
+            <div class="activity-info">
+                <span class="activity-category">SEMANA CULTURAL</span>
+                <h2>BAILE TÍPICO DE ALEMANIA</h2>
+                <p><strong>PRESENTACIÓN CULTURAL</strong><br><strong>2 DE OCTUBRE</strong></p>
+                <p>En el marco de la semana cultural, los estudiantes presentaron un baile típico de Alemania, acercándose a las tradiciones, la música y las costumbres de este país. A través de la danza, se promovió el respeto por la diversidad cultural y el reconocimiento de otras expresiones artísticas.</p>
+            </div>
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <div class="carousel-slide active"><img src="../img/actividades/baile típico de Alemania/baile típico de Alemania (1).jpeg" alt="Baile típico Alemania 1"></div>
+                    <div class="carousel-slide"><img src="../img/actividades/baile típico de Alemania/baile típico de Alemania (2).jpeg      " alt="Baile típico Alemania 2"></div>
+                    <div class="carousel-slide"><img src="../img/actividades/baile típico de Alemania/baile típico de Alemania (3).jpeg" alt="Baile típico Alemania 3"></div>
+                </div>
+                <button class="carousel-button prev" type="button" aria-label="Fotografía anterior">&#10094;</button>
+                <button class="carousel-button next" type="button" aria-label="Fotografía siguiente">&#10095;</button>
+                <div class="carousel-dots"></div>
+            </div>
+        </article>
+
+        <!-- ACTIVIDAD 15: DÍA DE LA CIENCIA -->
+        <article class="activity">
+            <div class="activity-info">
+                <span class="activity-category">ACTIVIDAD ESCOLAR</span>
+                <h2>DÍA DE LA CIENCIA</h2>
+                <p><strong>EXPLORANDO LA CIENCIA</strong><br><strong>23 DE SEPTIEMBRE</strong></p>
+                <p>En la celebración del Día de la Ciencia, los estudiantes participaron en diferentes experiencias y experimentos que despertaron su curiosidad y asombro por el mundo que los rodea. A través de la observación, la exploración y el planteamiento de preguntas, se acercaron al método científico de forma divertida y significativa.</p>
+            </div>
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <div class="carousel-slide active"><img src="../img/actividades/Día de la ciencia/Día de la ciencia (1).jpeg" alt="Día de la Ciencia 1"></div>
+                    <div class="carousel-slide"><img src="../img/actividades/Día de la ciencia/Día de la ciencia (2).jpeg" alt="Día de la Ciencia 2"></div>
+                    <div class="carousel-slide">
+                        <video controls preload="metadata" style="width:100%; height:100%; object-fit:cover;">
+                            <source src="../img/actividades/Día de la ciencia/Día de la ciencia (1).mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+                <button class="carousel-button prev" type="button" aria-label="Fotografía anterior">&#10094;</button>
+                <button class="carousel-button next" type="button" aria-label="Fotografía siguiente">&#10095;</button>
+                <div class="carousel-dots"></div>
+            </div>
+        </article>
+
+        <!-- ACTIVIDAD 16: FESTIVAL DE LA FRUTA -->
+        <article class="activity activity-reverse">
+            <div class="activity-info">
+                <span class="activity-category">ACTIVIDAD ESCOLAR</span>
+                <h2>FESTIVAL DE LA FRUTA</h2>
+                <p><strong>HÁBITOS SALUDABLES</strong><br><strong>21 DE SEPTIEMBRE</strong></p>
+                <p>En el Festival de la Fruta, los estudiantes disfrutaron de una jornada dedicada al consumo de frutas y a la promoción de hábitos alimenticios saludables. A través de la degustación, la presentación creativa de las frutas y actividades lúdicas, se resaltó la importancia de una alimentación equilibrada para el cuidado del cuerpo y la salud.</p>
+            </div>
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <div class="carousel-slide active"><img src="../img/actividades/festival-de-la-fruta/festival de la fruta 1.jpeg" alt="Festival de la Fruta 1"></div>
+                    <div class="carousel-slide"><img src="../img/actividades/festival-de-la-fruta/festival de la fruta.jpeg" alt="Festival de la Fruta 2"></div>
+                </div>
+                <button class="carousel-button prev" type="button" aria-label="Fotografía anterior">&#10094;</button>
+                <button class="carousel-button next" type="button" aria-label="Fotografía siguiente">&#10095;</button>
+                <div class="carousel-dots"></div>
+            </div>
+        </article>
+
+        <!-- ACTIVIDAD 17: PLASTILINA Y BARRO -->
+        <article class="activity">
+            <div class="activity-info">
+                <span class="activity-category">ACTIVIDAD ESCOLAR</span>
+                <h2>ELABORACIÓN DE OBJETOS EN PLASTILINA Y BARRO</h2>
+                <p><strong>CREATIVIDAD Y EXPRESIÓN ARTÍSTICA</strong><br><strong>28 DE SEPTIEMBRE</strong></p>
+                <p>Los estudiantes elaboraron objetos en plastilina y barro, desarrollando su creatividad, motricidad fina y expresión artística. A través del moldeado, dieron forma a sus ideas y personajes, explorando texturas, colores y técnicas que les permitieron expresar su imaginación.</p>
+            </div>
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <div class="carousel-slide active"><img src="../img/actividades/Plastilina-barro/ objetos en plastilina y barro (1).jpeg" alt="Objeto de Plastilina y Barro 1"></div>
+                    <div class="carousel-slide"><img src="../img/actividades/Plastilina-barro/ objetos en plastilina y barro (2).jpeg" alt="Objeto de Plastilina y Barro 2"></div>
+                    <div class="carousel-slide"><img src="../img/actividades/Plastilina-barro/ objetos en plastilina y barro (3).jpeg" alt="Objeto de Plastilina y Barro 3"></div>
+                    <div class="carousel-slide"><img src="../img/actividades/Plastilina-barro/ objetos en plastilina y barro (4).jpeg" alt="Objeto de Plastilina y Barro 4"></div>
+                    <div class="carousel-slide"><img src="../img/actividades/Plastilina-barro/ objetos en plastilina y barro (5).jpeg" alt="Objeto de Plastilina y Barro 5"></div>
+                    <div class="carousel-slide"><img src="../img/actividades/Plastilina-barro/ objetos en plastilina y barro (6).jpeg" alt="Objeto de Plastilina y Barro 6"></div>
+                    <div class="carousel-slide"><img src="../img/actividades/Plastilina-barro/ objetos en plastilina y barro (7).jpeg" alt="Objeto de Plastilina y Barro 7"></div>
+                </div>
+                <button class="carousel-button prev" type="button" aria-label="Fotografía anterior">&#10094;</button>
+                <button class="carousel-button next" type="button" aria-label="Fotografía siguiente">&#10095;</button>
+                <div class="carousel-dots"></div>
+            </div>
+        </article>
+
+        <!-- ACTIVIDAD 18: SIMULACRO DE SISMOS -->
+        <article class="activity activity-reverse">
+            <div class="activity-info">
+                <span class="activity-category">GESTIÓN DEL RIESGO</span>
+                <h2>SIMULACRO SOBRE SISMOS</h2>
+                <p><strong>PREVENCIÓN Y AUTOPROTECCIÓN</strong><br><strong>16 Y 23 DE OCTUBRE</strong></p>
+                <p>Los estudiantes participaron en el simulacro sobre sismos, una actividad orientada a fortalecer la cultura de la prevención y la autoprotección. A través de la práctica, aprendieron a identificar zonas seguras, a seguir rutas de evacuación y a actuar de manera organizada ante una posible emergencia.</p>
+            </div>
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <div class="carousel-slide active"><img src="../img/actividades/Simulacro-sismo/Simulacro sobre sismos  (1).jpeg" alt="Simulacro de Sismos 1"></div>
+                    <div class="carousel-slide"><img src="../img/actividades/Simulacro-sismo/Simulacro sobre sismos  (2).jpeg" alt="Simulacro de Sismos 2"></div>
+                    <div class="carousel-slide"><img src="../img/actividades/Simulacro-sismo/Simulacro sobre sismos  (3).jpeg" alt="Simulacro de Sismos 3"></div>
+                </div>
+                <button class="carousel-button prev" type="button" aria-label="Fotografía anterior">&#10094;</button>
+                <button class="carousel-button next" type="button" aria-label="Fotografía siguiente">&#10095;</button>
+                <div class="carousel-dots"></div>
+            </div>
+        </article>
+
+        <!-- ACTIVIDAD 19: LENGUAJE -->
+        <article class="activity">
+            <div class="activity-info">
+                <span class="activity-category">COMPETENCIAS ACADÉMICAS</span>
+                <h2>COMPETENCIAS EN EL ÁREA DE LENGUAJE</h2>
+                <p><strong>FORTALECIENDO LA COMUNICACIÓN</strong><br><strong>9 DE SEPTIEMBRE</strong></p>
+                <p>Los estudiantes participaron en actividades de competencia en el área de Lenguaje, donde pusieron a prueba su comprensión lectora, expresión oral y producción escrita. A través de dinámicas y retos, demostraron sus habilidades comunicativas y su capacidad para interpretar y crear textos.</p>
+            </div>
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <div class="carousel-slide active"><img src="../img/actividades/competencias-lenguaje/Competencias en el área de Lenguaje 1.jpeg" alt="Competencias de Lenguaje 1"></div>
+                    <div class="carousel-slide"><img src="../img/actividades/competencias-lenguaje/Competencias en el área de Lenguaje.jpeg" alt="Competencias de Lenguaje 2"></div>
+                </div>
+                <button class="carousel-button prev" type="button">&#10094;</button>
+                <button class="carousel-button next" type="button">&#10095;</button>
+                <div class="carousel-dots"></div>
+            </div>
+        </article>
+
+        <!-- ACTIVIDAD 20: CAMINATA DE VALORES -->
+        <article class="activity activity-reverse">
+            <div class="activity-info">
+                <span class="activity-category">SEMANA CULTURAL</span>
+                <h2>CAMINATA SEMANA CULTURAL DE LOS VALORES</h2>
+                <p><strong>PROMOVIENDO VALORES EN COMUNIDAD</strong><br><strong>6 DE SEPTIEMBRE</strong></p>
+                <p>En el marco de la semana cultural de los valores, se realizó una caminata con la participación de estudiantes, docentes y familias, con el propósito de promover la convivencia, el respeto y la unión dentro de la comunidad educativa.</p>
+            </div>
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <div class="carousel-slide active"><img src="../img/actividades/Caminatasemanacultural/Caminata semana cultural de los valores.jpeg" alt="Caminata de valores 1"></div>
+                    <div class="carousel-slide"><img src="../img/actividades/Caminatasemanacultural/Caminata semana cultural de los valores 1.jpeg" alt="Caminata de valores 2"></div>
+                </div>
+                <button class="carousel-button prev" type="button">&#10094;</button>
+                <button class="carousel-button next" type="button">&#10095;</button>
+                <div class="carousel-dots"></div>
+            </div>
+        </article>
+
+        <!-- ACTIVIDAD 21: FINAL REINADO DE VALORES -->
+        <article class="activity">
+            <div class="activity-info">
+                <span class="activity-category">REINADO DE LOS VALORES</span>
+                <h2>FINAL REINADO DE VALORES</h2>
+                <p><strong>GRAN FINAL</strong><br><strong>29 DE OCTUBRE</strong></p>
+                <p>Con gran entusiasmo se realizó la final del reinado de valores, un evento que reunió a estudiantes, docentes y familias en una jornada de alegría y sana convivencia. Los participantes demostraron sus talentos y el compromiso con los valores que promueve la institución.</p>
+            </div>
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <div class="carousel-slide active"><img src="../img/actividades/Finalreinado-valores/Final reinado de valores (1).jpeg" alt="Final reinado de valores 1"></div>
+                    <div class="carousel-slide"><img src="../img/actividades/Finalreinado-valores/Final reinado de valores (2).jpeg" alt="Final reinado de valores 2"></div>
+                    <div class="carousel-slide">
+                        <video controls preload="metadata" style="width:100%; height:100%; object-fit:cover;">
+                            <source src="../img/actividades/Finalreinado-valores/Final reinado de valores (1).mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+                <button class="carousel-button prev" type="button">&#10094;</button>
+                <button class="carousel-button next" type="button">&#10095;</button>
+                <div class="carousel-dots"></div>
+            </div>
+        </article>
+
+    </main>
+
+    <!-- ========================= FOOTER ========================== -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-column">
+                <img src="../img/institucional/logo.png" alt="Logo institucional" class="footer-logo">
+                <h3>DOCENTE MALVIS ALGARÍN</h3>
+                <p>Espacio dedicado a compartir experiencias, actividades y proyectos educativos.</p>
+            </div>
+            <div class="footer-column">
+                <h3>NAVEGACIÓN</h3>
+                <a href="../index.html">Inicio</a>
+                <a href="actividades.html">Actividades</a>
+                <a href="actividades-2025.html">Actividades 2025</a>
+                <a href="perfil.html">Perfil del docente</a>
+                <a href="resena.html">Reseña institucional</a>
+            </div>
+            <div class="footer-column">
+                <h3>INSTITUCIÓN</h3>
+                <p>Institución Educativa N.º 3 Santa Catalina de Siena</p>
+                <p>Sede San José</p>
+                <p>Maicao, La Guajira</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Docente Malvis Algarín. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="../js/script.js"></script>
+    <script src="../js/carousel.js"></script>
+</body>
+</html>

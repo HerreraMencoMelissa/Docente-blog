@@ -529,7 +529,7 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* ========================= RESPONSIVE ========================== */
-
+       
 @media (max-width: 900px) {
     .navigation a { padding: 9px 10px; font-size: 12px; }
     .featured-grid { grid-template-columns: 1fr 1fr; }
