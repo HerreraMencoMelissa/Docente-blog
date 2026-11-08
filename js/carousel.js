@@ -12,6 +12,9 @@ document.addEventListener("DOMContentLoaded", () => {
         let currentSlide = 0;
         let interval = null;
 
+        // 🚩 Bandera: true si hay un video reproduciéndose
+        let videoReproduciendo = false;
+
         /*
         ==========================================
         UNA SOLA IMAGEN
@@ -20,21 +23,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (slides.length <= 1) {
 
-            if (prevButton) {
-                prevButton.style.display = "none";
-            }
+            if (prevButton) prevButton.style.display = "none";
+            if (nextButton) nextButton.style.display = "none";
+            if (dotsContainer) dotsContainer.style.display = "none";
 
-            if (nextButton) {
-                nextButton.style.display = "none";
-            }
-
-            if (dotsContainer) {
-                dotsContainer.style.display = "none";
-            }
-
-            if (slides[0]) {
-                slides[0].classList.add("active");
-            }
+            if (slides[0]) slides[0].classList.add("active");
 
             return;
         }
@@ -49,17 +42,9 @@ document.addEventListener("DOMContentLoaded", () => {
         slides.forEach((slide, index) => {
 
             const dot = document.createElement("button");
-
             dot.classList.add("carousel-dot");
-
-            dot.setAttribute(
-                "aria-label",
-                `Ir a la imagen ${index + 1}`
-            );
-
-            if (index === 0) {
-                dot.classList.add("active");
-            }
+            dot.setAttribute("aria-label", `Ir a la imagen ${index + 1}`);
+            if (index === 0) dot.classList.add("active");
 
             dot.addEventListener("click", () => {
                 showSlide(index);
@@ -67,9 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             dotsContainer.appendChild(dot);
-
         });
-
 
         const dots = dotsContainer.querySelectorAll(".carousel-dot");
 
@@ -90,82 +73,87 @@ document.addEventListener("DOMContentLoaded", () => {
                 currentSlide = index;
             }
 
-
             slides.forEach((slide, i) => {
-
-                slide.classList.toggle(
-                    "active",
-                    i === currentSlide
-                );
-
+                slide.classList.toggle("active", i === currentSlide);
             });
-
 
             dots.forEach((dot, i) => {
-
-                dot.classList.toggle(
-                    "active",
-                    i === currentSlide
-                );
-
+                dot.classList.toggle("active", i === currentSlide);
             });
 
+            // ⏸️ Pausar TODOS los videos que no estén en el slide activo
+            slides.forEach((slide, i) => {
+                const video = slide.querySelector("video");
+                if (video && i !== currentSlide && !video.paused) {
+                    video.pause();
+                    video.currentTime = 0; // opcional: reinicia el video
+                }
+            });
+
+            // Si el slide activo NO tiene video, liberar la bandera
+            const slideActivo = slides[currentSlide];
+            const videoActivo = slideActivo ? slideActivo.querySelector("video") : null;
+            if (!videoActivo) {
+                videoReproduciendo = false;
+            }
         }
 
 
         /*
         ==========================================
-        SIGUIENTE
+        SIGUIENTE / ANTERIOR
         ==========================================
         */
 
         function nextSlide() {
-
+            if (videoReproduciendo) return;
             showSlide(currentSlide + 1);
-
         }
-
-
-        /*
-        ==========================================
-        ANTERIOR
-        ==========================================
-        */
 
         function previousSlide() {
-
+            if (videoReproduciendo) return;
             showSlide(currentSlide - 1);
-
         }
 
 
         /*
         ==========================================
-        BOTONES
+        BOTONES (permiten navegar aunque haya video)
         ==========================================
         */
 
         if (nextButton) {
-
             nextButton.addEventListener("click", () => {
-
-                nextSlide();
+                // 🎯 Pausar el video si está sonando
+                pausarVideoActivo();
+                // Forzar avance aunque haya video
+                showSlide(currentSlide + 1);
                 restartAutoplay();
-
             });
+        }
 
+        if (prevButton) {
+            prevButton.addEventListener("click", () => {
+                pausarVideoActivo();
+                showSlide(currentSlide - 1);
+                restartAutoplay();
+            });
         }
 
 
-        if (prevButton) {
+        /*
+        ==========================================
+        PAUSAR VIDEO ACTIVO (helper)
+        ==========================================
+        */
 
-            prevButton.addEventListener("click", () => {
-
-                previousSlide();
-                restartAutoplay();
-
-            });
-
+        function pausarVideoActivo() {
+            const slideActivo = slides[currentSlide];
+            const video = slideActivo ? slideActivo.querySelector("video") : null;
+            if (video && !video.paused) {
+                video.pause();
+            }
+            videoReproduciendo = false;
         }
 
 
@@ -176,29 +164,23 @@ document.addEventListener("DOMContentLoaded", () => {
         */
 
         function startAutoplay() {
-
-            interval = setInterval(() => {
-
-                nextSlide();
-
-            }, 5000);
-
-        }
-
-
-        function stopAutoplay() {
-
-            clearInterval(interval);
-
-        }
-
-
-        function restartAutoplay() {
+            if (videoReproduciendo) return;
 
             stopAutoplay();
 
-            startAutoplay();
+            interval = setInterval(() => {
+                nextSlide();
+            }, 5000);
+        }
 
+        function stopAutoplay() {
+            clearInterval(interval);
+            interval = null;
+        }
+
+        function restartAutoplay() {
+            stopAutoplay();
+            startAutoplay();
         }
 
 
@@ -208,16 +190,90 @@ document.addEventListener("DOMContentLoaded", () => {
         ==========================================
         */
 
-        carousel.addEventListener(
-            "mouseenter",
-            stopAutoplay
-        );
+        carousel.addEventListener("mouseenter", () => {
+            stopAutoplay();
+        });
+
+        carousel.addEventListener("mouseleave", () => {
+            if (!videoReproduciendo) {
+                startAutoplay();
+            }
+        });
 
 
-        carousel.addEventListener(
-            "mouseleave",
-            startAutoplay
-        );
+        /*
+        ==========================================
+        🎬 CONTROL DE VIDEOS
+        ==========================================
+        */
+
+        const videos = carousel.querySelectorAll("video");
+
+        videos.forEach((video) => {
+
+            video.addEventListener("play", () => {
+                videoReproduciendo = true;
+                stopAutoplay();
+            });
+
+            video.addEventListener("ended", () => {
+                videoReproduciendo = false;
+                video.currentTime = 0;
+                startAutoplay();
+            });
+
+            video.addEventListener("pause", () => {
+                // Solo reanudar si el video está en el slide activo
+                const slideDelVideo = video.closest(".carousel-slide");
+                if (slideDelVideo && slideDelVideo.classList.contains("active")) {
+                    if (!video.ended) {
+                        videoReproduciendo = false;
+                        startAutoplay();
+                    }
+                }
+            });
+        });
+
+
+        /*
+        ==========================================
+        👁️ INTERSECTION OBSERVER
+        Pausa el video cuando el carrusel
+        sale de la pantalla (scroll)
+        ==========================================
+        */
+
+        const observer = new IntersectionObserver((entries) => {
+
+            entries.forEach((entry) => {
+
+                // Si el carrusel ya no está visible en pantalla
+                if (!entry.isIntersecting) {
+                    const videoActivo = slides[currentSlide]
+                        ? slides[currentSlide].querySelector("video")
+                        : null;
+
+                    if (videoActivo && !videoActivo.paused) {
+                        videoActivo.pause();
+                        videoReproduciendo = false;
+                    }
+
+                    // Detener autoplay al salir de pantalla (opcional pero recomendado)
+                    stopAutoplay();
+                } else {
+                    // Cuando vuelve a estar visible, reanudar autoplay
+                    // (solo si no hay video reproduciéndose)
+                    if (!videoReproduciendo) {
+                        startAutoplay();
+                    }
+                }
+            });
+
+        }, {
+            threshold: 0.3 // 30% del carrusel visible para considerar "en pantalla"
+        });
+
+        observer.observe(carousel);
 
 
         /*
@@ -227,7 +283,6 @@ document.addEventListener("DOMContentLoaded", () => {
         */
 
         showSlide(0);
-
         startAutoplay();
 
     });
